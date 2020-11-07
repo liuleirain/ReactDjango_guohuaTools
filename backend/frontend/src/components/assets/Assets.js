@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDesktop } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
@@ -8,16 +8,18 @@ import CartItem from "./CartItem";
 const Assets = () => {
   const [assets, setAssets] = useState([]);
   const [sn, setSn] = useState("");
+  const inputRef = useRef();
 
   useEffect(() => {
+    inputRef.current.focus();
     axios
-      .get(process.env.REACT_APP_API_URL + "/api/assets")
+      .get(`${process.env.REACT_APP_API_URL}/api/assets`)
       .then((res) => setAssets(res.data))
       .catch((err) => console.log(err));
   }, []);
 
-  const handleChange = (e) => {
-    setSn(e.target.value);
+  const handleChange = () => {
+    setSn(inputRef.current.value);
   };
 
   const regex = new RegExp(`^${sn}`, "gi");
@@ -35,8 +37,8 @@ const Assets = () => {
           </h2>
           <div className="form-group">
             <input
+              ref={inputRef}
               onChange={handleChange}
-              value={sn}
               type="text"
               id="search"
               className="form-control from-control-lg"
